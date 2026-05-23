@@ -166,3 +166,18 @@ Token next_token(Lexer *lexer)
     return token;
 }
 
+Token *tokenize(Lexer *lexer)
+{
+    Token *arr = malloc(sizeof(Token) * 256);
+    for (int i = 0; i < 256; i++)
+    {
+        Token token = next_token(lexer);
+        if (token.type == TOKEN_EOF)
+        {
+            arr[i] = token;
+            break;
+        }
+        arr[i] = token;
+    }
+    return arr;
+}
