@@ -87,6 +87,39 @@ ASTNode *parse_expression(Token *tokens, int *pos)
     return parse_comparison(tokens, pos);
 }
 
-ASTNode *parse_statement(Token *tokens, int *pos){
-    
+ASTNode *parse_statement(Token *tokens, int *pos)
+{
+    Token token = tokens[*pos];
+    if (token.type == TOKEN_PRINT)
+    {
+        ASTNode *print = ast_init(NODE_PRINT);
+        (*pos)++;
+        print->left = parse_expression(tokens, pos);
+        return print;
+    }
+    else if (token.type == TOKEN_NAME && tokens[(*pos + 1)].type == TOKEN_EQUALS)
+    {
+        ASTNode *assign = ast_init(NODE_ASSIGN);
+        strcpy(assign->data.name, token.value);
+        (*pos) += 2;
+        assign->right = parse_expression(tokens, pos);
+        return assign;
+    }
+    else
+    {
+        return parse_expression(tokens, pos);
+    }
+}
+
+ASTNode *parse_program(Token *tokens, int *pos)
+{
+    ASTNode *initial = parse_statement(tokens, pos);
+    ASTNode *current = initial;
+    while (tokens[*pos].type != TOKEN_EOF)
+    {
+        ASTNode *next = parse_statement(tokens, pos);
+        current->next = next;
+        current = next;
+        }
+    return initial;
 }
