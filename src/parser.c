@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 ASTNode *ast_init(NodeType nodetype)
 {
@@ -22,13 +23,13 @@ ASTNode *parse_primary(Token *tokens, int *pos)
         (*pos)++;
         return node;
     }
-    if (token.type == TOKEN_NAME)
-    {
+    if(token.type == TOKEN_NAME){
         ASTNode *node = ast_init(NODE_NAME);
         strcpy(node->data.name, token.value);
         (*pos)++;
         return node;
     }
+    return NULL;
 }
 
 ASTNode *parse_multiplication(Token *tokens, int *pos)
