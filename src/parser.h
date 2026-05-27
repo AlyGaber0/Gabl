@@ -28,6 +28,7 @@ typedef struct ASTNode
     struct ASTNode *left;
     struct ASTNode *right;
     struct ASTNode *next;
+    struct ASTNode *else_body;
 } ASTNode;
 
 ASTNode *ast_init(NodeType nodetype);

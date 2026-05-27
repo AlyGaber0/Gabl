@@ -147,7 +147,7 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         ASTNode *if_node = ast_init(NODE_IF);
         if_node->left = expression;
         if_node->right = body;
-        if_node->next = else_body;
+        if_node->else_body = else_body;
         return if_node;
     }
 
