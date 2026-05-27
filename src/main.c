@@ -33,7 +33,7 @@ void print_ast(ASTNode *node)
 }
 int main(void)
 {
-    Lexer lexer = lexer_init("print 10 + 5");
+    Lexer lexer = lexer_init("x = 10 + (5*2)");
     Token *tokens = tokenize(&lexer);
     int pos = 0;
     ASTNode *tree = parse_program(tokens, &pos);

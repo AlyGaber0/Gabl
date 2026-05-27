@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+ASTNode *parse_expression(Token *tokens, int *pos);
+
 ASTNode *ast_init(NodeType nodetype)
 {
     ASTNode *node = malloc(sizeof(ASTNode));
@@ -16,6 +18,13 @@ ASTNode *ast_init(NodeType nodetype)
 ASTNode *parse_primary(Token *tokens, int *pos)
 {
     Token token = tokens[*pos];
+    if (token.type == TOKEN_LPAREN)
+    {
+        (*pos)++;
+        ASTNode *expression = parse_expression(tokens, pos);
+        (*pos)++;
+        return expression;
+    }
     if (token.type == TOKEN_NUMBER)
     {
         ASTNode *node = ast_init(NODE_NUMBER);
@@ -23,7 +32,8 @@ ASTNode *parse_primary(Token *tokens, int *pos)
         (*pos)++;
         return node;
     }
-    if(token.type == TOKEN_NAME){
+    if (token.type == TOKEN_NAME)
+    {
         ASTNode *node = ast_init(NODE_NAME);
         strcpy(node->data.name, token.value);
         (*pos)++;
@@ -106,6 +116,41 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         assign->right = parse_expression(tokens, pos);
         return assign;
     }
+    else if (token.type == TOKEN_IF)
+    {
+        (*pos)++;
+        ASTNode *expression = parse_expression(tokens, pos);
+        (*pos)++;
+        ASTNode *body = parse_statement(tokens, pos);
+        ASTNode *current = body;
+        while (tokens[*pos].type != TOKEN_END && tokens[*pos].type != TOKEN_ELSE)
+        {
+            ASTNode *body = parse_statement(tokens, pos);
+            current->next = body;
+            current = body;
+        }
+        TokenType stop = tokens[*pos].type;
+        (*pos)++;
+        ASTNode *else_body = NULL;
+        if (stop == TOKEN_ELSE)
+        {
+            else_body = parse_statement(tokens, pos);
+            ASTNode *else_current = else_body;
+            while (tokens[*pos].type != TOKEN_END)
+            {
+                else_body = parse_statement(tokens, pos);
+                else_current->next = else_body;
+                else_current = else_body;
+            }
+            (*pos)++;
+        }
+        ASTNode *if_node = ast_init(NODE_IF);
+        if_node->left = expression;
+        if_node->right = body;
+        if_node->next = else_body;
+        return if_node;
+    }
+
     else
     {
         return parse_expression(tokens, pos);
@@ -121,6 +166,6 @@ ASTNode *parse_program(Token *tokens, int *pos)
         ASTNode *next = parse_statement(tokens, pos);
         current->next = next;
         current = next;
-        }
+    }
     return initial;
 }
