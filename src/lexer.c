@@ -69,14 +69,20 @@ Token read_name(Lexer *lexer)
         token.type = TOKEN_IF;
     else if (strcmp(buf, "else") == 0)
         token.type = TOKEN_ELSE;
-    else if (strcmp(buf, "end") == 0)
-        token.type = TOKEN_END;
-    else if (strcmp(buf, "then") == 0)
-        token.type = TOKEN_THEN;
     else if (strcmp(buf, "function") == 0)
         token.type = TOKEN_FUNCTION;
     else if (strcmp(buf, "return") == 0)
         token.type = TOKEN_RETURN;
+    else if (strcmp(buf, "fn") == 0)
+        token.type = TOKEN_FN;
+    else if (strcmp(buf, "while") == 0)
+        token.type = TOKEN_WHILE;
+    else if (strcmp(buf, "for") == 0)
+        token.type = TOKEN_FOR;
+    else if (strcmp(buf, "True") == 0)
+        token.type = TOKEN_TRUE;
+    else if (strcmp(buf, "False") == 0)
+        token.type = TOKEN_FALSE;
     else
         token.type = TOKEN_NAME;
     return token;
@@ -93,6 +99,15 @@ Token next_token(Lexer *lexer)
         token.type = TOKEN_EOF;
         strcpy(token.value, "EOF");
         return token;
+    }
+
+    if (c == '/' && (lexer->string[lexer->pos + 1]) == '/')
+    {
+        while (peek(lexer) != '\n' && peek(lexer) != '\0')
+        {
+            advance(lexer);
+        }
+        return next_token(lexer);
     }
 
     if (isdigit(c))
@@ -160,6 +175,18 @@ Token next_token(Lexer *lexer)
     case '<':
         token.type = TOKEN_LESS;
         strcpy(token.value, "<");
+        break;
+    case '{':
+        token.type = TOKEN_LBRACE;
+        strcpy(token.value, "{");
+        break;
+    case '}':
+        token.type = TOKEN_RBRACE;
+        strcpy(token.value, "}");
+        break;
+    case ',':
+        token.type = TOKEN_COMMA;
+        strcpy(token.value, ",");
         break;
     }
 

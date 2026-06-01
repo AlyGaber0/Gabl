@@ -4,17 +4,31 @@
 #include "environment.h"
 #include <stdio.h>
 #include <stdlib.h>
-int main(void)
+
+int main(int argc, char *argv[])
 {
-    char *source =
-        "y = 0\n"
-        "x = y + (5 * 3)\n"
-        "print x\n"
-        "if x > 20 then\n"
-        "print y\n"
-        "else\n"
-        "print x\n"
-        "end";
+    if (argc < 2)
+    {
+        fprintf(stderr, "Usage: gabl <file.gabl>\n");
+        return 1;
+    }
+    FILE *file = fopen(argv[1], "r");
+    if (file == NULL)
+    {
+        fprintf(stderr, "Error: could not open file %s\n", argv[1]);
+        return 1;
+    }
+
+    char source[4096];
+    int i = 0;
+    int c;
+    while ((c = fgetc(file)) != EOF)
+    {
+        source[i++] = c;
+    }
+    source[i] = '\0';
+    fclose(file);
+
     Lexer lexer = lexer_init(source);
     Token *tokens = tokenize(&lexer);
 

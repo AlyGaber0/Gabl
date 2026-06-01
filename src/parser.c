@@ -104,8 +104,9 @@ ASTNode *parse_statement(Token *tokens, int *pos)
     if (token.type == TOKEN_PRINT)
     {
         ASTNode *print = ast_init(NODE_PRINT);
-        (*pos)++;
+        (*pos) += 2;
         print->left = parse_expression(tokens, pos);
+        (*pos)++;
         return print;
     }
     else if (token.type == TOKEN_NAME && tokens[(*pos + 1)].type == TOKEN_EQUALS)
@@ -119,24 +120,26 @@ ASTNode *parse_statement(Token *tokens, int *pos)
     else if (token.type == TOKEN_IF)
     {
         (*pos)++;
+        (*pos)++;
         ASTNode *expression = parse_expression(tokens, pos);
+        (*pos)++;
         (*pos)++;
         ASTNode *body = parse_statement(tokens, pos);
         ASTNode *current = body;
-        while (tokens[*pos].type != TOKEN_END && tokens[*pos].type != TOKEN_ELSE)
+        while (tokens[*pos].type != TOKEN_RBRACE)
         {
             ASTNode *body = parse_statement(tokens, pos);
             current->next = body;
             current = body;
         }
-        TokenType stop = tokens[*pos].type;
         (*pos)++;
         ASTNode *else_body = NULL;
-        if (stop == TOKEN_ELSE)
+        if (tokens[*pos].type == TOKEN_ELSE)
         {
+            (*pos) += 2;
             else_body = parse_statement(tokens, pos);
             ASTNode *else_current = else_body;
-            while (tokens[*pos].type != TOKEN_END)
+            while (tokens[*pos].type != TOKEN_RBRACE)
             {
                 else_body = parse_statement(tokens, pos);
                 else_current->next = else_body;

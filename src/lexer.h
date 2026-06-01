@@ -17,13 +17,20 @@ typedef enum
     TOKEN_PRINT,         // the word print
     TOKEN_IF,            // the word if
     TOKEN_ELSE,          // the word else
-    TOKEN_END,           // the word end
-    TOKEN_THEN,          // the word then
     TOKEN_FUNCTION,      // the word function
     TOKEN_RETURN,        // the word return
     TOKEN_LPAREN,        // (
     TOKEN_RPAREN,        // )
-    TOKEN_EOF            // end of input
+    TOKEN_EOF,            // end of input
+    TOKEN_LBRACE,       // for {
+    TOKEN_RBRACE,       // for }
+    TOKEN_TRUE, 
+    TOKEN_FALSE,
+    TOKEN_FN,
+    TOKEN_WHILE,
+    TOKEN_FOR,
+    TOKEN_SLASH_SLASH,
+    TOKEN_COMMA
 } TokenType;
 
 typedef struct
