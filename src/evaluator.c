@@ -73,6 +73,15 @@ int eval(ASTNode *node, Environment *env)
         }
         return 0;
     }
+    case NODE_FUNCTION_DEF:
+    {
+        env_set(env, node->data.name, (int)node);
+        return 0;
+    }
+    case NODE_FUNCTION_CALL:
+    {
+        
+    }
     default:
         return 0;
     }

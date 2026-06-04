@@ -12,9 +12,11 @@ typedef struct Environment
 {
     Entry arr[256];
     int entries;
+    struct Environment *parent;
 } Environment;
 
 void env_set(Environment *env, char name[], int value);
 int env_get(Environment *env, char name[]);
+Environment *env_create(Environment *parent);
 
 #endif

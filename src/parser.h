@@ -29,6 +29,8 @@ typedef struct ASTNode
     struct ASTNode *right;
     struct ASTNode *next;
     struct ASTNode *else_body;
+    char params[8][64];
+    int param_count;
 } ASTNode;
 
 ASTNode *ast_init(NodeType nodetype);

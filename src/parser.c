@@ -35,9 +35,31 @@ ASTNode *parse_primary(Token *tokens, int *pos)
     if (token.type == TOKEN_NAME)
     {
         ASTNode *node = ast_init(NODE_NAME);
-        strcpy(node->data.name, token.value);
-        (*pos)++;
-        return node;
+        if (tokens[*pos + 1].type == TOKEN_LPAREN)
+        {
+            ASTNode *fn_node = ast_init(NODE_FUNCTION_CALL);
+            strcpy(fn_node->data.name, token.value);
+            (*pos)++;
+            (*pos)++;
+            fn_node->left = parse_expression(tokens, pos);
+            ASTNode *current = fn_node->left;
+            while (tokens[*pos].type != TOKEN_RPAREN)
+            {
+                if (tokens[*pos].type == TOKEN_COMMA)
+                    (*pos)++;
+                ASTNode *arg = parse_expression(tokens, pos);
+                current->next = arg;
+                current = arg;
+            }
+            (*pos)++;
+            return fn_node;
+        }
+        else
+        {
+            strcpy(node->data.name, token.value);
+            (*pos)++;
+            return node;
+        }
     }
     return NULL;
 }
@@ -152,6 +174,43 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         if_node->right = body;
         if_node->else_body = else_body;
         return if_node;
+    }
+    else if (token.type == TOKEN_FN)
+    {
+        ASTNode *fn_node = ast_init(NODE_FUNCTION_DEF);
+        fn_node->param_count = 0;
+        (*pos)++;
+        Token name_token = tokens[*pos];
+        strcpy(fn_node->data.name, name_token.value);
+        (*pos) += 2;
+        while (tokens[*pos].type != TOKEN_RPAREN)
+        {
+            Token par_name = tokens[*pos];
+            strcpy(fn_node->params[fn_node->param_count], par_name.value);
+            (fn_node->param_count)++;
+            (*pos)++;
+            if (tokens[*pos].type == TOKEN_COMMA)
+                (*pos)++;
+        }
+        (*pos)++;
+        (*pos)++;
+        ASTNode *body = parse_statement(tokens, pos);
+        ASTNode *current = body;
+        while (tokens[*pos].type != TOKEN_RBRACE)
+        {
+            ASTNode *body = parse_statement(tokens, pos);
+            current->next = body;
+            current = body;
+        }
+        (*pos)++;
+        fn_node->right = body;
+        return fn_node;
+    }
+    else if(token.type == TOKEN_RETURN){
+        ASTNode *return_node = ast_init(NODE_RETURN);
+        (*pos)++;
+        return_node->left = parse_expression(tokens, pos);
+        return return_node;
     }
 
     else
