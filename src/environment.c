@@ -37,6 +37,7 @@ long env_get(Environment *env, char name[])
 
 Environment *env_create(Environment *parent){
     Environment *new_env = malloc(sizeof(Environment));
+    memset(new_env, 0, sizeof(Environment));
     new_env->entries = 0;
     new_env->parent = parent;
     return new_env;

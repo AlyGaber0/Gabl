@@ -1,10 +1,13 @@
+fn factorial(n) {
+    if(n == 0){
+        return 1
+    }
 
-fn add(a, b){
-    return a + b * 5
+    return n * factorial(n - 1)
 }
 
-print(add(3, 5))
-
+print(factorial(5))
+print(factorial(10))
 
 
 

@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+static int return_flag = 0;
+static long return_value = 0;
+
 long eval(ASTNode *node, Environment *env)
 {
     if (node == NULL)
@@ -55,20 +58,24 @@ long eval(ASTNode *node, Environment *env)
         long condition = eval(node->left, env);
         if (condition)
         {
-            ASTNode *statemnt = node->right;
-            while (statemnt != NULL)
+            ASTNode *stmnt = node->right;
+            while (stmnt != NULL)
             {
-                eval(statemnt, env);
-                statemnt = statemnt->next;
+                long val = eval(stmnt, env);
+                if (return_flag)
+                    return return_value;
+                stmnt = stmnt->next;
             }
         }
         else if (node->else_body != NULL)
         {
-            ASTNode *statemnt = node->else_body;
-            while (statemnt != NULL)
+            ASTNode *stmnt = node->else_body;
+            while (stmnt != NULL)
             {
-                eval(statemnt, env);
-                statemnt = statemnt->next;
+                long val = eval(stmnt, env);
+                if (return_flag)
+                    return return_value;
+                stmnt = stmnt->next;
             }
         }
         return 0;
@@ -80,12 +87,15 @@ long eval(ASTNode *node, Environment *env)
     }
     case NODE_FUNCTION_CALL:
     {
+        return_flag = 0;
         ASTNode *fn = (ASTNode *)env_get(env, node->data.name);
         Environment *new_env = env_create(env);
         ASTNode *arg = node->left;
         int i = 0;
         while (arg != NULL)
         {
+            if (return_flag)
+                break;
             long val = eval(arg, env);
             env_set(new_env, fn->params[i], val);
             arg = arg->next;
@@ -95,14 +105,19 @@ long eval(ASTNode *node, Environment *env)
         long result = 0;
         while (stmnt != NULL)
         {
+            if (return_flag)
+                break;
             result = eval(stmnt, new_env);
             stmnt = stmnt->next;
         }
-        return result;
+        long final_result = return_flag ? return_value : result;
+        return final_result;
     }
     case NODE_RETURN:
     {
-        return eval(node->left, env);
+        return_flag = 1;
+        return_value = eval(node->left, env);
+        return return_value;
     }
     default:
         return 0;
