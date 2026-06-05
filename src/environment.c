@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void env_set(Environment *env, char name[], int value)
+void env_set(Environment *env, char name[], long value)
 {
     for (int i = 0; i < env->entries; i++)
     {
@@ -20,7 +20,7 @@ void env_set(Environment *env, char name[], int value)
     (env->entries)++;
 }
 
-int env_get(Environment *env, char name[])
+long env_get(Environment *env, char name[])
 {
     for (int i = 0; i < env->entries; i++)
     {

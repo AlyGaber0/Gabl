@@ -1,12 +1,10 @@
 
-y = 20
-x = y + 5 * 3
-print(x)
-if(x > 20){
-    print(y)
+fn add(a, b){
+    return a + b * 5
 }
-else {
-    print(x)
-}
+
+print(add(3, 5))
+
+
 
 

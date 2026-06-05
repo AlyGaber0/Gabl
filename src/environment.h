@@ -5,7 +5,7 @@
 typedef struct Entry
 {
     char name[64];
-    int value;
+    long value;
 } Entry;
 
 typedef struct Environment
@@ -15,8 +15,8 @@ typedef struct Environment
     struct Environment *parent;
 } Environment;
 
-void env_set(Environment *env, char name[], int value);
-int env_get(Environment *env, char name[]);
+void env_set(Environment *env, char name[], long value);
+long env_get(Environment *env, char name[]);
 Environment *env_create(Environment *parent);
 
 #endif
