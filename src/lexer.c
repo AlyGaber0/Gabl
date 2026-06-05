@@ -195,12 +195,12 @@ Token next_token(Lexer *lexer)
 
 Token *tokenize(Lexer *lexer)
 {
-    Token *arr = malloc(sizeof(Token) * 256);
-    for (int i = 0; i < 256; i++)
+    Token *arr = malloc(sizeof(Token) * 4096);
+    for (int i = 0; i < 4096; i++)
     {
         if (i == 255)
         {
-            fprintf(stderr, "Error: too many tokens, max 256 supported.\n");
+            fprintf(stderr, "Error: too many tokens, max 4096 supported.\n");
             return NULL;
         }
         Token token = next_token(lexer);

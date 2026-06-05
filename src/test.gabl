@@ -1,13 +1,25 @@
-fn factorial(n) {
-    if(n == 0){
-        return 1
-    }
 
-    return n * factorial(n - 1)
+// fibonacci
+fn fib(n) {
+if(n == 0) {
+return 0
 }
-
-print(factorial(5))
-print(factorial(10))
-
-
-
+if(n == 1) {
+return 1
+}
+return fib(n - 1) + fib(n - 2)
+}
+print(fib(0))    // expected: 0
+print(fib(1))    // expected: 1
+print(fib(5))    // expected: 5
+print(fib(10))   // expected: 55
+// function with multiple parameters
+fn add(a, b) {
+return a + b
+}
+fn multiply(a, b) {
+return a * b
+}
+print(add(3, 5))                        // expected: 8
+print(multiply(4, 6))                   // expected: 24
+print(add(multiply(2, 3), multiply(4, 5)))   // expected: 26

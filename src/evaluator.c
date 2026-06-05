@@ -94,13 +94,14 @@ long eval(ASTNode *node, Environment *env)
         int i = 0;
         while (arg != NULL)
         {
-            if (return_flag)
-                break;
+            return_flag = 0;
             long val = eval(arg, env);
             env_set(new_env, fn->params[i], val);
             arg = arg->next;
             i++;
         }
+        
+        return_flag = 0;
         ASTNode *stmnt = fn->right;
         long result = 0;
         while (stmnt != NULL)
