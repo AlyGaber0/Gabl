@@ -13,7 +13,8 @@ typedef enum
     NODE_FUNCTION_DEF,
     NODE_FUNCTION_CALL,
     NODE_RETURN,
-    NODE_BLOCK
+    NODE_BLOCK,
+    NODE_WHILE  
 } NodeType;
 
 typedef struct ASTNode

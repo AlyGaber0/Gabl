@@ -206,13 +206,34 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         fn_node->right = body;
         return fn_node;
     }
-    else if(token.type == TOKEN_RETURN){
+    else if (token.type == TOKEN_RETURN)
+    {
         ASTNode *return_node = ast_init(NODE_RETURN);
         (*pos)++;
         return_node->left = parse_expression(tokens, pos);
         return return_node;
     }
-
+    else if (token.type == TOKEN_WHILE)
+    {
+        (*pos)++;
+        (*pos)++;
+        ASTNode *expression = parse_expression(tokens, pos);
+        (*pos)++;
+        (*pos)++;
+        ASTNode *body = parse_statement(tokens, pos);
+        ASTNode *current = body;
+        while (tokens[*pos].type != TOKEN_RBRACE)
+        {
+            ASTNode *body = parse_statement(tokens, pos);
+            current->next = body;
+            current = body;
+        }
+        (*pos)++;
+        ASTNode *while_node = ast_init(NODE_WHILE);
+        while_node->left = expression;
+        while_node->right = body;
+        return while_node;
+    }
     else
     {
         return parse_expression(tokens, pos);

@@ -100,7 +100,7 @@ long eval(ASTNode *node, Environment *env)
             arg = arg->next;
             i++;
         }
-        
+
         return_flag = 0;
         ASTNode *stmnt = fn->right;
         long result = 0;
@@ -119,6 +119,23 @@ long eval(ASTNode *node, Environment *env)
         return_flag = 1;
         return_value = eval(node->left, env);
         return return_value;
+    }
+    case NODE_WHILE:
+    {
+        long condition = eval(node->left, env);
+        while (condition)
+        {
+            ASTNode *stmnt = node->right;
+            while (stmnt != NULL)
+            {
+                long val = eval(stmnt, env);
+                if (return_flag)
+                    return return_value;
+                stmnt = stmnt->next;
+            }
+            condition = eval(node->left, env);
+        }
+        return 0;
     }
     default:
         return 0;
