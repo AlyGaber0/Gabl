@@ -1,0 +1,13 @@
+
+fn test(a) {
+    if(a > 0) {
+        b = 55
+    }
+    print(b)
+
+    return 5
+}
+
+
+print(test(-1))
+// expected: Error: b is undefined.

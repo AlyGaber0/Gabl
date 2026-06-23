@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
 
     Environment env;
     env.entries = 0;
+    env.parent = NULL;
+    env.return_flag = 0;
 
     ASTNode *current = program;
     while (current != NULL)

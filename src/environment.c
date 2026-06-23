@@ -29,13 +29,16 @@ long env_get(Environment *env, char name[])
             return env->arr[i].value;
         }
     }
-    if(env->parent != NULL){
+    if (env->parent != NULL)
+    {
         return env_get(env->parent, name);
     }
-    return -1;
+    fprintf(stderr, "Error: %s is undefined.\n", name);
+    exit(1);
 }
 
-Environment *env_create(Environment *parent){
+Environment *env_create(Environment *parent)
+{
     Environment *new_env = malloc(sizeof(Environment));
     memset(new_env, 0, sizeof(Environment));
     new_env->entries = 0;

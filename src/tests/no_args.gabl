@@ -1,0 +1,8 @@
+
+fn test() {
+    return 1 + 1
+}
+
+
+print(test())
+// expected: 2

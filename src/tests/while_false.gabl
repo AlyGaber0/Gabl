@@ -1,0 +1,13 @@
+
+fn test(a) {
+    b = 0
+    while(a > 0) {
+        b = b + 1
+    }
+
+    return b
+}
+
+
+print(test(-1))
+// expected: 0

@@ -1,0 +1,13 @@
+
+fn square(a) {
+
+    return a * a
+}
+
+fn doublesquare(a) {
+    return square(a) * square(a)
+}
+
+
+print(doublesquare(2))
+// expected: 16
