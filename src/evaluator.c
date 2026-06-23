@@ -3,8 +3,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int return_flag = 0;
+
 static long return_value = 0;
+
+// static uint8_t func_depth = 0;
+
+// int max_depth()
+// {
+//     return 0;
+// }
+
+// int track_depth(Environment *env, ASTNode *node, int *prev_depth)
+// {
+//     int curr_func_depth;
+
+//     // depth decrement
+//     ASTNode *stmnt = eval(node->right, env);
+//     if (stmnt == NULL)
+//     {
+//         // make sure return flag is 0
+
+//         curr_func_depth = prev_depth--;
+//     }
+
+//     // depth increment
+
+//     return curr_func_depth;
+// }
 
 long eval(ASTNode *node, Environment *env)
 {
@@ -62,7 +87,7 @@ long eval(ASTNode *node, Environment *env)
             while (stmnt != NULL)
             {
                 long val = eval(stmnt, env);
-                if (return_flag)
+                if (env->return_flag)
                     return return_value;
                 stmnt = stmnt->next;
             }
@@ -73,7 +98,7 @@ long eval(ASTNode *node, Environment *env)
             while (stmnt != NULL)
             {
                 long val = eval(stmnt, env);
-                if (return_flag)
+                if (env->return_flag)
                     return return_value;
                 stmnt = stmnt->next;
             }
@@ -87,36 +112,33 @@ long eval(ASTNode *node, Environment *env)
     }
     case NODE_FUNCTION_CALL:
     {
-        return_flag = 0;
         ASTNode *fn = (ASTNode *)env_get(env, node->data.name);
         Environment *new_env = env_create(env);
         ASTNode *arg = node->left;
         int i = 0;
         while (arg != NULL)
         {
-            return_flag = 0;
             long val = eval(arg, env);
             env_set(new_env, fn->params[i], val);
             arg = arg->next;
             i++;
         }
 
-        return_flag = 0;
         ASTNode *stmnt = fn->right;
         long result = 0;
         while (stmnt != NULL)
         {
-            if (return_flag)
+            if (new_env->return_flag)
                 break;
             result = eval(stmnt, new_env);
             stmnt = stmnt->next;
         }
-        long final_result = return_flag ? return_value : result;
+        long final_result = new_env->return_flag ? return_value : result;
         return final_result;
     }
     case NODE_RETURN:
     {
-        return_flag = 1;
+        env->return_flag = 1;
         return_value = eval(node->left, env);
         return return_value;
     }
@@ -129,7 +151,7 @@ long eval(ASTNode *node, Environment *env)
             while (stmnt != NULL)
             {
                 long val = eval(stmnt, env);
-                if (return_flag)
+                if (env->return_flag)
                     return return_value;
                 stmnt = stmnt->next;
             }

@@ -13,6 +13,7 @@ typedef struct Environment
     Entry arr[256];
     int entries;
     struct Environment *parent;
+    int return_flag;
 } Environment;
 
 void env_set(Environment *env, char name[], long value);
