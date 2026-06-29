@@ -1,0 +1,4 @@
+# Build output — pushed separately to gh-pages
+docs/out/
+docs/.next/
+docs/node_modules/
