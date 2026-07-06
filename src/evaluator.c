@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 static long return_value = 0;
 
 // static uint8_t func_depth = 0;
@@ -41,6 +40,8 @@ long eval(ASTNode *node, Environment *env)
         return node->data.num_value;
     case NODE_NAME:
         return env_get(env, node->data.name);
+    case NODE_STRING:
+        return node->data.name;
     case NODE_BINOP:
     {
         long left = eval(node->left, env);

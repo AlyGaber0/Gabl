@@ -13,6 +13,7 @@ typedef enum
     TOKEN_BANG_EQUALS,   // !=
     TOKEN_GREATER,       // >
     TOKEN_LESS,          // <
+    TOKEN_STRING,        // string literals
     TOKEN_NAME,          // variable names
     TOKEN_PRINT,         // the word print
     TOKEN_IF,            // the word if
@@ -21,10 +22,10 @@ typedef enum
     TOKEN_RETURN,        // the word return
     TOKEN_LPAREN,        // (
     TOKEN_RPAREN,        // )
-    TOKEN_EOF,            // end of input
-    TOKEN_LBRACE,       // for {
-    TOKEN_RBRACE,       // for }
-    TOKEN_TRUE, 
+    TOKEN_EOF,           // end of input
+    TOKEN_LBRACE,        // for {
+    TOKEN_RBRACE,        // for }
+    TOKEN_TRUE,
     TOKEN_FALSE,
     TOKEN_FN,
     TOKEN_WHILE,
@@ -51,4 +52,3 @@ Token next_token(Lexer *lexer);
 Token *tokenize(Lexer *lexer);
 
 #endif
-

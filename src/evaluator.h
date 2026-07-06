@@ -5,6 +5,4 @@
 
 long eval(ASTNode *node, Environment *env);
 
-
-
 #endif

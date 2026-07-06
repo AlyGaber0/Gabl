@@ -35,6 +35,29 @@ void skip_whitespace(Lexer *lexer)
     }
 }
 
+Token read_string(Lexer *lexer)
+{
+    Token token;
+    char buf[64];
+    int i = 0;
+    advance(lexer);
+    while ((peek(lexer)) != '"')
+    {
+        if (peek(lexer) == '\0')
+        {
+            fprintf(stderr, "String Literal Error: no closing quote\n");
+            exit(1);
+        }
+        buf[i] = advance(lexer);
+        i++;
+    }
+    advance(lexer);
+    buf[i] = '\0';
+    strcpy(token.value, buf);
+    token.type = TOKEN_STRING;
+    return token;
+}
+
 Token read_number(Lexer *lexer)
 {
     Token token;
@@ -99,6 +122,11 @@ Token next_token(Lexer *lexer)
         token.type = TOKEN_EOF;
         strcpy(token.value, "EOF");
         return token;
+    }
+
+    if (c == '"')
+    {
+        return read_string(lexer);
     }
 
     if (c == '/' && (lexer->string[lexer->pos + 1]) == '/')

@@ -32,6 +32,13 @@ ASTNode *parse_primary(Token *tokens, int *pos)
         (*pos)++;
         return node;
     }
+    if (token.type == TOKEN_STRING)
+    {
+        ASTNode *node = ast_init(NODE_STRING);
+        strcpy(node->data.name, token.value);
+        (*pos)++;
+        return node;
+    }
     if (token.type == TOKEN_NAME)
     {
         ASTNode *node = ast_init(NODE_NAME);
