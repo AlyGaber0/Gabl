@@ -30,26 +30,43 @@ static long return_value = 0;
 //     return curr_func_depth;
 // }
 
-long eval(ASTNode *node, Environment *env)
+Result result_create_numb(long value)
+{
+    Result local;
+    local.type = TYPE_NUMBER;
+    local.type_data.num_result = value;
+    return local;
+}
+
+Result result_create_str(char name[])
+{
+    Result local;
+    local.type = TYPE_STRING;
+    strcpy(local.type_data.string_result, name);
+    return local;
+}
+
+Result eval(ASTNode *node, Environment *env)
 {
     if (node == NULL)
-        return 0;
+        return result_create_numb(0);
+
     switch (node->type)
     {
     case NODE_NUMBER:
-        return node->data.num_value;
+        return result_create_numb(node->data.num_value);
     case NODE_NAME:
         return env_get(env, node->data.name);
     case NODE_STRING:
-        return node->data.name;
+        return result_create_str(node->data.name);
     case NODE_BINOP:
     {
-        long left = eval(node->left, env);
-        long right = eval(node->right, env);
+        Result left = eval(node->left, env);
+        Result right = eval(node->right, env);
         switch (node->data.op)
         {
         case '+':
-            return left + right;
+            return result_create_numb(left.type_data.num_result + right.type_data.num_result);
         case '-':
             return left - right;
         case '*':

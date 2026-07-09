@@ -3,6 +3,6 @@
 #include "environment.h"
 #include "parser.h"
 
-long eval(ASTNode *node, Environment *env);
+Result eval(ASTNode *node, Environment *env);
 
 #endif

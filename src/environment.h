@@ -2,10 +2,25 @@
 #define ENVIRONMENT_H
 #include "parser.h"
 
+typedef enum
+{
+    TYPE_NUMBER,
+    TYPE_STRING
+} ResultType;
+
+typedef struct Result
+{
+    ResultType type;
+    union
+    {
+        long num_result;
+        char string_result[64];
+    } type_data;
+} Result;
 typedef struct Entry
 {
     char name[64];
-    long value;
+    Result value;
 } Entry;
 
 typedef struct Environment
@@ -16,8 +31,8 @@ typedef struct Environment
     int return_flag;
 } Environment;
 
-void env_set(Environment *env, char name[], long value);
-long env_get(Environment *env, char name[]);
+void env_set(Environment *env, char name[], Result value);
+Result env_get(Environment *env, char name[]);
 Environment *env_create(Environment *parent);
 
 #endif
