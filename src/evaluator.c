@@ -3,7 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-static long return_value = 0;
+static Result return_value;
+void return_value_init(){
+    return_value.type = TYPE_NUMBER;
+    return_value.type_data.num_result = 0;
+}
 
 // static uint8_t func_depth = 0;
 
@@ -68,43 +72,44 @@ Result eval(ASTNode *node, Environment *env)
         case '+':
             return result_create_numb(left.type_data.num_result + right.type_data.num_result);
         case '-':
-            return left - right;
+            return result_create_numb(left.type_data.num_result - right.type_data.num_result);
         case '*':
-            return left * right;
+            return result_create_numb(left.type_data.num_result * right.type_data.num_result);
         case '/':
-            return left / right;
+            return result_create_numb(left.type_data.num_result / right.type_data.num_result);
         case '>':
-            return left > right;
+            return result_create_numb(left.type_data.num_result > right.type_data.num_result);
         case '<':
-            return left < right;
+            return result_create_numb(left.type_data.num_result < right.type_data.num_result);
         case '=':
-            return left == right;
+            return result_create_numb(left.type_data.num_result == right.type_data.num_result);
         case '!':
-            return left != right;
+            return result_create_numb(left.type_data.num_result != right.type_data.num_result);
         }
         break;
     }
     case NODE_ASSIGN:
     {
-        long value = eval(node->right, env);
+        Result value = eval(node->right, env);
         env_set(env, node->data.name, value);
         return value;
     }
     case NODE_PRINT:
     {
-        long value = eval(node->left, env);
-        printf("%ld\n", value);
-        return 0;
+        Result value = eval(node->left, env);
+        if(value.type == TYPE_NUMBER) printf("%ld\n", value.type_data.num_result);
+        else printf("%s\n", value.type_data.string_result);
+        return result_create_numb(0);
     }
     case NODE_IF:
     {
-        long condition = eval(node->left, env);
-        if (condition)
+        Result condition = eval(node->left, env);
+        if (condition.type_data.num_result)
         {
             ASTNode *stmnt = node->right;
             while (stmnt != NULL)
             {
-                long val = eval(stmnt, env);
+                Result val = eval(stmnt, env);
                 if (env->return_flag)
                     return return_value;
                 stmnt = stmnt->next;
@@ -115,35 +120,37 @@ Result eval(ASTNode *node, Environment *env)
             ASTNode *stmnt = node->else_body;
             while (stmnt != NULL)
             {
-                long val = eval(stmnt, env);
+                Result val = eval(stmnt, env);
                 if (env->return_flag)
                     return return_value;
                 stmnt = stmnt->next;
             }
         }
-        return 0;
+        return result_create_numb(0);
     }
     case NODE_FUNCTION_DEF:
     {
-        env_set(env, node->data.name, (long)node);
-        return 0;
+        env_set(env, node->data.name, result_create_numb((long)node));
+        return result_create_numb(0);
     }
     case NODE_FUNCTION_CALL:
     {
-        ASTNode *fn = (ASTNode *)env_get(env, node->data.name);
+        Result temp = env_get(env, node->data.name);
+        long temp2 = temp.type_data.num_result;
+        ASTNode *fn = (ASTNode *) temp2;
         Environment *new_env = env_create(env);
         ASTNode *arg = node->left;
         int i = 0;
         while (arg != NULL)
         {
-            long val = eval(arg, env);
+            Result val = eval(arg, env);
             env_set(new_env, fn->params[i], val);
             arg = arg->next;
             i++;
         }
 
         ASTNode *stmnt = fn->right;
-        long result = 0;
+        Result result = result_create_numb(0);
         while (stmnt != NULL)
         {
             if (new_env->return_flag)
@@ -151,7 +158,7 @@ Result eval(ASTNode *node, Environment *env)
             result = eval(stmnt, new_env);
             stmnt = stmnt->next;
         }
-        long final_result = new_env->return_flag ? return_value : result;
+        Result final_result = new_env->return_flag ? return_value : result;
         return final_result;
     }
     case NODE_RETURN:
@@ -162,23 +169,23 @@ Result eval(ASTNode *node, Environment *env)
     }
     case NODE_WHILE:
     {
-        long condition = eval(node->left, env);
-        while (condition)
+        Result condition = eval(node->left, env);
+        while (condition.type_data.num_result)
         {
             ASTNode *stmnt = node->right;
             while (stmnt != NULL)
             {
-                long val = eval(stmnt, env);
+                Result val = eval(stmnt, env);
                 if (env->return_flag)
                     return return_value;
                 stmnt = stmnt->next;
             }
             condition = eval(node->left, env);
         }
-        return 0;
+        return result_create_numb(0);
     }
     default:
-        return 0;
+        return result_create_numb(0);
     }
-    return 0;
+    return result_create_numb(0);
 }

@@ -1,2 +1,16 @@
+fn shout(word) {
 
-print(42)
+print(word)
+
+loud = word
+
+return loud
+
+}
+a = "gabl"
+
+b = shout("test")
+
+print(a)
+
+print(b)
