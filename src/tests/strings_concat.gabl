@@ -1,0 +1,15 @@
+
+fn combine(a, b) {
+  return a + b
+}
+
+x = "foo"
+y = "bar"
+print(x + y)
+print(combine("hello", "world"))
+
+
+// error test
+// n = 5
+// s = "oops"
+// print(n + s)

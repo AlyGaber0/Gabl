@@ -4,7 +4,8 @@
 #include <string.h>
 
 static Result return_value;
-void return_value_init(){
+void return_value_init()
+{
     return_value.type = TYPE_NUMBER;
     return_value.type_data.num_result = 0;
 }
@@ -70,7 +71,21 @@ Result eval(ASTNode *node, Environment *env)
         switch (node->data.op)
         {
         case '+':
-            return result_create_numb(left.type_data.num_result + right.type_data.num_result);
+            if (left.type == TYPE_NUMBER && right.type == TYPE_NUMBER)
+                return result_create_numb(left.type_data.num_result + right.type_data.num_result);
+            else if (left.type == TYPE_STRING && right.type == TYPE_STRING)
+            {
+                Result local;
+                local.type = TYPE_STRING;
+                strcpy(local.type_data.string_result, left.type_data.string_result);
+                strcat(local.type_data.string_result, right.type_data.string_result);
+                return result_create_str(local.type_data.string_result);
+            }
+            else
+            {
+                fprintf(stderr, "Error: cannot concatenate string and a number.\n");
+                exit(1);
+            }
         case '-':
             return result_create_numb(left.type_data.num_result - right.type_data.num_result);
         case '*':
@@ -82,9 +97,25 @@ Result eval(ASTNode *node, Environment *env)
         case '<':
             return result_create_numb(left.type_data.num_result < right.type_data.num_result);
         case '=':
-            return result_create_numb(left.type_data.num_result == right.type_data.num_result);
+            if (left.type == TYPE_NUMBER && right.type == TYPE_NUMBER)
+                return result_create_numb(left.type_data.num_result == right.type_data.num_result);
+            else if (left.type == TYPE_STRING && right.type == TYPE_STRING)
+                return result_create_numb(strcmp(left.type_data.string_result, right.type_data.string_result) == 0);
+            else
+            {
+                fprintf(stderr, "Error: cannot compare string and a number.\n");
+                exit(1);
+            }
         case '!':
-            return result_create_numb(left.type_data.num_result != right.type_data.num_result);
+            if (left.type == TYPE_NUMBER && right.type == TYPE_NUMBER)
+                return result_create_numb(left.type_data.num_result != right.type_data.num_result);
+            else if (left.type == TYPE_STRING && right.type == TYPE_STRING)
+                return result_create_numb(strcmp(left.type_data.string_result, right.type_data.string_result) != 0);
+            else
+            {
+                fprintf(stderr, "Error: cannot compare string and a number.\n");
+                exit(1);
+            }
         }
         break;
     }
@@ -97,8 +128,10 @@ Result eval(ASTNode *node, Environment *env)
     case NODE_PRINT:
     {
         Result value = eval(node->left, env);
-        if(value.type == TYPE_NUMBER) printf("%ld\n", value.type_data.num_result);
-        else printf("%s\n", value.type_data.string_result);
+        if (value.type == TYPE_NUMBER)
+            printf("%ld\n", value.type_data.num_result);
+        else
+            printf("%s\n", value.type_data.string_result);
         return result_create_numb(0);
     }
     case NODE_IF:
@@ -137,7 +170,7 @@ Result eval(ASTNode *node, Environment *env)
     {
         Result temp = env_get(env, node->data.name);
         long temp2 = temp.type_data.num_result;
-        ASTNode *fn = (ASTNode *) temp2;
+        ASTNode *fn = (ASTNode *)temp2;
         Environment *new_env = env_create(env);
         ASTNode *arg = node->left;
         int i = 0;

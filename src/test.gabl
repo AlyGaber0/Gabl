@@ -1,16 +1,5 @@
-fn shout(word) {
+n = 5
 
-print(word)
+s = "oops"
 
-loud = word
-
-return loud
-
-}
-a = "gabl"
-
-b = shout("test")
-
-print(a)
-
-print(b)
+print(n + s)
