@@ -31,7 +31,9 @@ typedef enum
     TOKEN_WHILE,
     TOKEN_FOR,
     TOKEN_SLASH_SLASH,
-    TOKEN_COMMA
+    TOKEN_COMMA,
+    TOKEN_LBRACKET,
+    TOKEN_RBRACKET
 } TokenType;
 
 typedef struct

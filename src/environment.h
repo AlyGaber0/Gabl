@@ -5,9 +5,15 @@
 typedef enum
 {
     TYPE_NUMBER,
-    TYPE_STRING
+    TYPE_STRING,
+    TYPE_ARRAY
 } ResultType;
 
+typedef struct ArrayStruct
+{
+    struct Result *arr;
+    int count;
+} ArrayStruct;
 typedef struct Result
 {
     ResultType type;
@@ -15,6 +21,8 @@ typedef struct Result
     {
         long num_result;
         char string_result[64];
+        ArrayStruct arr;
+
     } type_data;
 } Result;
 typedef struct Entry
@@ -34,5 +42,6 @@ typedef struct Environment
 void env_set(Environment *env, char name[], Result value);
 Result env_get(Environment *env, char name[]);
 Environment *env_create(Environment *parent);
+ArrayStruct *array_create();
 
 #endif

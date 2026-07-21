@@ -15,7 +15,10 @@ typedef enum
     NODE_RETURN,
     NODE_BLOCK,
     NODE_WHILE,
-    NODE_STRING
+    NODE_STRING,
+    NODE_ARRAY,
+    NODE_INDEX,
+    NODE_INDEX_ASSIGN
 } NodeType;
 
 typedef struct ASTNode

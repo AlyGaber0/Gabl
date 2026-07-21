@@ -39,6 +39,28 @@ ASTNode *parse_primary(Token *tokens, int *pos)
         (*pos)++;
         return node;
     }
+    if (token.type == TOKEN_LBRACKET)
+    {
+        ASTNode *node = ast_init(NODE_ARRAY);
+        (*pos)++;
+        if (tokens[*pos].type == TOKEN_RBRACKET)
+        {
+            (*pos)++;
+            return node;
+        }
+        node->left = parse_expression(tokens, pos);
+        ASTNode *current = node->left;
+        while (tokens[*pos].type != TOKEN_RBRACKET)
+        {
+            if (tokens[*pos].type == TOKEN_COMMA)
+                (*pos)++;
+            ASTNode *arg = parse_expression(tokens, pos);
+            current->next = arg;
+            current = arg;
+        }
+        (*pos)++;
+        return node;
+    }
     if (token.type == TOKEN_NAME)
     {
         ASTNode *node = ast_init(NODE_NAME);
@@ -48,6 +70,11 @@ ASTNode *parse_primary(Token *tokens, int *pos)
             strcpy(fn_node->data.name, token.value);
             (*pos)++;
             (*pos)++;
+            if (tokens[*pos].type == TOKEN_RPAREN)
+            {
+                (*pos)++;
+                return fn_node;
+            }
             fn_node->left = parse_expression(tokens, pos);
             ASTNode *current = fn_node->left;
             while (tokens[*pos].type != TOKEN_RPAREN)
@@ -60,6 +87,16 @@ ASTNode *parse_primary(Token *tokens, int *pos)
             }
             (*pos)++;
             return fn_node;
+        }
+        else if (tokens[*pos + 1].type == TOKEN_LBRACKET)
+        {
+            ASTNode *ind_node = ast_init(NODE_INDEX);
+            strcpy(ind_node->data.name, token.value);
+            (*pos)++;
+            (*pos)++;
+            ind_node->left = parse_expression(tokens, pos);
+            (*pos)++;
+            return ind_node;
         }
         else
         {
@@ -240,6 +277,16 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         while_node->left = expression;
         while_node->right = body;
         return while_node;
+    }
+    else if (token.type == TOKEN_NAME && tokens[(*pos + 1)].type == TOKEN_LBRACKET)
+    {
+        ASTNode *ind_assign = ast_init(NODE_INDEX_ASSIGN);
+        strcpy(ind_assign->data.name, token.value);
+        (*pos) += 2;
+        ind_assign->left = parse_expression(tokens, pos);
+        (*pos)+= 2;
+        ind_assign->right = parse_expression(tokens, pos);
+        return ind_assign;
     }
     else
     {

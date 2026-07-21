@@ -216,6 +216,14 @@ Token next_token(Lexer *lexer)
         token.type = TOKEN_COMMA;
         strcpy(token.value, ",");
         break;
+    case '[':
+        token.type = TOKEN_LBRACKET;
+        strcpy(token.value, "[");
+        break;
+    case ']':
+        token.type = TOKEN_RBRACKET;
+        strcpy(token.value, "]");
+        break;
     }
 
     return token;
