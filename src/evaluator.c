@@ -34,6 +34,29 @@ void return_value_init()
 
 //     return curr_func_depth;
 // }
+void print_result(Result r)
+{
+    if (r.type == TYPE_NUMBER)
+        printf("%ld", r.type_data.num_result);
+    else if (r.type == TYPE_STRING)
+        printf("%s", r.type_data.string_result);
+    else if (r.type == TYPE_ARRAY)
+    {
+        printf("[");
+        for (int i = 0; i < r.type_data.arr.count; i++)
+        {
+            print_result(r.type_data.arr.elements[i]);
+            if (i != r.type_data.arr.count - 1)
+                printf(",");
+        }
+        printf("]");
+    }
+    else
+    {
+        fprintf(stderr, "Type error: unknown type.\n");
+        exit(1);
+    }
+}
 
 Result result_create_numb(long value)
 {
@@ -128,10 +151,8 @@ Result eval(ASTNode *node, Environment *env)
     case NODE_PRINT:
     {
         Result value = eval(node->left, env);
-        if (value.type == TYPE_NUMBER)
-            printf("%ld\n", value.type_data.num_result);
-        else
-            printf("%s\n", value.type_data.string_result);
+        print_result(value);
+        printf("\n");
         return result_create_numb(0);
     }
     case NODE_IF:
@@ -215,6 +236,74 @@ Result eval(ASTNode *node, Environment *env)
             }
             condition = eval(node->left, env);
         }
+        return result_create_numb(0);
+    }
+    case NODE_ARRAY:
+    {
+        ArrayStruct *new_arr = array_create();
+        ASTNode *arg = node->left;
+        int i = 0;
+        while (arg != NULL)
+        {
+            Result val = eval(arg, env);
+            if (i >= 64)
+            {
+                fprintf(stderr, "Overflow error: array too big.\n");
+                exit(1);
+            }
+            new_arr->elements[i] = val;
+            arg = arg->next;
+            i++;
+        }
+        new_arr->count = i;
+        Result local;
+        local.type = TYPE_ARRAY;
+        local.type_data.arr = *new_arr;
+        return local;
+    }
+    case NODE_INDEX:
+    {
+        Result temp = env_get(env, node->data.name);
+        if (temp.type != TYPE_ARRAY)
+        {
+            fprintf(stderr, "Error: type mismatch, node is not of type array.\n");
+            exit(1);
+        }
+        Result val = eval(node->left, env);
+        if (val.type != TYPE_NUMBER)
+        {
+            fprintf(stderr, "Error: type mismatch, node is not of type number.\n");
+            exit(1);
+        }
+        if (val.type_data.num_result < 0 || val.type_data.num_result >= temp.type_data.arr.count)
+        {
+            fprintf(stderr, "Error: index not found.\n");
+            exit(1);
+        }
+
+        return temp.type_data.arr.elements[val.type_data.num_result];
+    }
+    case NODE_INDEX_ASSIGN:
+    {
+        Result temp = env_get(env, node->data.name);
+        if (temp.type != TYPE_ARRAY)
+        {
+            fprintf(stderr, "Error: type mismatch, node is not of type array.\n");
+            exit(1);
+        }
+        Result val = eval(node->left, env);
+        if (val.type != TYPE_NUMBER)
+        {
+            fprintf(stderr, "Error: type mismatch, node is not of type number.\n");
+            exit(1);
+        }
+        if (val.type_data.num_result < 0 || val.type_data.num_result >= temp.type_data.arr.count)
+        {
+            fprintf(stderr, "Error: index not found.\n");
+            exit(1);
+        }
+        Result assignment = eval(node->right, env);
+        temp.type_data.arr.elements[val.type_data.num_result] = assignment;
         return result_create_numb(0);
     }
     default:

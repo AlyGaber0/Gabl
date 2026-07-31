@@ -49,7 +49,7 @@ Environment *env_create(Environment *parent)
 ArrayStruct *array_create()
 {
     ArrayStruct *new_arr = malloc(sizeof(ArrayStruct));
-    new_arr->arr = malloc(sizeof(Result) * 64);
+    new_arr->elements = malloc(sizeof(Result) * ARRAY_CAPACITY);
     new_arr->count = 0;
     return new_arr;
 }

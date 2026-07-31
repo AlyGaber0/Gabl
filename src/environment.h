@@ -2,6 +2,8 @@
 #define ENVIRONMENT_H
 #include "parser.h"
 
+#define ARRAY_CAPACITY 64
+
 typedef enum
 {
     TYPE_NUMBER,
@@ -11,7 +13,7 @@ typedef enum
 
 typedef struct ArrayStruct
 {
-    struct Result *arr;
+    struct Result *elements;
     int count;
 } ArrayStruct;
 typedef struct Result
@@ -20,7 +22,7 @@ typedef struct Result
     union
     {
         long num_result;
-        char string_result[64];
+        char string_result[ARRAY_CAPACITY];
         ArrayStruct arr;
 
     } type_data;

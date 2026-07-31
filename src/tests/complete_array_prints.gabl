@@ -1,0 +1,38 @@
+x = [1, 2, 3]
+print(x)
+
+s = ["a", "b", "c"]
+print(s)
+
+mixed = [1, "two", 3]
+print(mixed)
+
+nested = [[1, 2], [3, 4]]
+print(nested)
+
+empty = []
+print(empty)
+
+x[1] = 99
+print(x)
+print(x[1])
+
+deep = [1, [2, [3, 4]], 5]
+print(deep)
+
+fn first(a) {
+    return a[0]
+}
+print(first([7, 8, 9]))
+
+// Expected:
+//
+// [1,2,3]
+// [a,b,c]
+// [1,two,3]
+// [[1,2],[3,4]]
+// []
+// [1,99,3]
+// 99
+// [1,[2,[3,4]],5]
+// 7
