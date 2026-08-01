@@ -18,13 +18,13 @@ const STEPS = [
   },
   {
     step: 3,
-    title: "Compile with GCC",
-    code: "gcc main.c lexer.c parser.c environment.c evaluator.c -o gabl",
+    title: "Compile with make",
+    code: "make",
   },
   {
     step: 4,
     title: "Create a Gabl source file",
-    code: `# hello.gabl
+    code: `// hello.gabl
 print(42)`,
   },
   {
@@ -53,7 +53,7 @@ const FILES = [
   {
     file: "environment.c",
     description:
-      "Manages variable storage and scope. Each function call gets a new environment linked to its parent, enabling scoped variable lookup up the call chain.",
+      "Manages variable storage and scope. Each function call gets a new environment linked to its parent, enabling scoped variable lookup up the call chain. Also defines the tagged Result value type used throughout the interpreter, along with the backing structure for arrays.",
   },
   {
     file: "main.c",
@@ -89,6 +89,7 @@ export default function DownloadPage() {
         }}
       >
         Gabl requires only GCC. No package manager, no runtime, no dependencies.
+        The Makefile drives the build; make clean removes the binary.
       </p>
 
       {/* Install steps */}

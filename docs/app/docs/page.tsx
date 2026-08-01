@@ -9,7 +9,7 @@ type Section = {
   id: string;
   title: string;
   description: string;
-  code: string;
+  code?: string;
 };
 
 const SECTIONS: Section[] = [
@@ -17,7 +17,7 @@ const SECTIONS: Section[] = [
     id: "variables",
     title: "Variables",
     description:
-      "Variables are declared and assigned using the = operator. Gabl is dynamically typed — a variable holds whatever value you assign to it. Variables must be assigned before they are read.",
+      "Variables are declared and assigned using the = operator. Gabl is dynamically typed — a variable holds whatever value you assign to it. That value can be a number, a string, or an array. Variables must be assigned before they are read.",
     code: `x = 10
 y = 25
 z = x + y
@@ -41,6 +41,44 @@ print(d)
 print(5 == 5)
 print(5 != 3)
 print(4 < 9)`,
+  },
+  {
+    id: "strings",
+    title: "Strings",
+    description:
+      "String literals are written in double quotes. A string is a value like any other: it can be assigned to a variable, passed to a function, returned from one, and printed. The + operator concatenates two strings, joining them with no separator inserted. The == and != operators compare string contents and return 1 or 0, the same way the numeric comparisons do. Applying any of these operators to one string and one number is a runtime error — Gabl will not coerce between the two.",
+    code: `greeting = "hello"
+name = "world"
+print(greeting + name)
+
+fn shout(word) {
+  return word + "!"
+}
+
+print(shout("gabl"))
+
+print("abc" == "abc")
+print("abc" != "xyz")`,
+  },
+  {
+    id: "arrays",
+    title: "Arrays",
+    description:
+      "An array literal is written as comma separated elements in square brackets. Elements can be numbers, strings, or other arrays, so a single array can mix types and arrays can nest to any depth. arr[0] reads an element and arr[0] = 99 writes one; indices are zero based, and the index can be any expression that evaluates to a number, not just a literal. An empty array is written []. Printing an array prints every element, recursing into nested arrays. Arrays have a fixed capacity of 64 elements, set when the array is created, and cannot grow afterwards. Reading or writing an index that is negative or greater than or equal to the array's length is a runtime error, as is indexing a value that is not an array or using a non-number as an index.",
+    code: `nums = [1, 2, 3]
+print(nums)
+print(nums[0])
+
+nums[1] = 99
+print(nums)
+
+words = ["a", "b", "c"]
+mixed = [1, "two", 3]
+nested = [[1, 2], [3, 4]]
+
+print(words)
+print(mixed)
+print(nested)`,
   },
   {
     id: "conditionals",
@@ -110,6 +148,12 @@ fn fib(n) {
 
 print(factorial(6))
 print(fib(10))`,
+  },
+  {
+    id: "limitations",
+    title: "Known limitations",
+    description:
+      "Arrays have a fixed capacity of 64 elements and cannot grow — there is no append operation. Strings have a fixed maximum length of 64 characters, and cannot be indexed. Numbers are integers; there is no floating point. There is no garbage collection and no memory is freed during execution, so every AST node, environment frame, and array allocation lives for the lifetime of the program.",
   },
 ];
 
@@ -213,7 +257,7 @@ export default function DocsPage() {
             >
               {description}
             </p>
-            <CodeBlock>{code}</CodeBlock>
+            {code && <CodeBlock>{code}</CodeBlock>}
           </section>
         ))}
       </div>

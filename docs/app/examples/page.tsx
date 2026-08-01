@@ -58,7 +58,7 @@ print(fib(15))`,
     title: "Prime Checker",
     description:
       "Tests whether a number is prime using a while loop and a helper function. The helper iterates from 2 up to n - 1, checking for any divisor. Demonstrates combining loops with function calls.",
-    code: `fn is_prime(n) {
+    code: `fn isPrime(n) {
   if(n < 2) {
     return 0
   }
@@ -72,11 +72,11 @@ print(fib(15))`,
   return 1
 }
 
-print(is_prime(1))
-print(is_prime(2))
-print(is_prime(7))
-print(is_prime(9))
-print(is_prime(13))`,
+print(isPrime(1))
+print(isPrime(2))
+print(isPrime(7))
+print(isPrime(9))
+print(isPrime(13))`,
     output: `0
 1
 1
@@ -99,6 +99,61 @@ print(0)`,
 2
 1
 0`,
+  },
+  {
+    title: "Array Sum",
+    description:
+      "Iterates over an array by index with a while loop, accumulating a running total. The length is passed explicitly because Gabl has no built in way to query an array's length yet.",
+    code: `fn sum(arr, n) {
+  total = 0
+  i = 0
+  while(i < n) {
+    total = total + arr[i]
+    i = i + 1
+  }
+  return total
+}
+
+print(sum([1, 2, 3, 4, 5], 5))`,
+    output: `15`,
+  },
+  {
+    title: "Array Maximum",
+    description:
+      "Finds the largest element in an array. Demonstrates comparison inside a loop and conditional assignment, seeding the result with the first element and replacing it whenever a larger one turns up.",
+    code: `fn max(arr, n) {
+  best = arr[0]
+  i = 1
+  while(i < n) {
+    if(arr[i] > best) {
+      best = arr[i]
+    }
+    i = i + 1
+  }
+  return best
+}
+
+print(max([3, 17, 8, 42, 5], 5))`,
+    output: `42`,
+  },
+  {
+    title: "String Building",
+    description:
+      "Repeats a string a given number of times by concatenating it onto an accumulator in a loop. Demonstrates string concatenation and returning a string from a function.",
+    code: `fn repeat(word, times) {
+  out = ""
+  i = 0
+  while(i < times) {
+    out = out + word
+    i = i + 1
+  }
+  return out
+}
+
+print(repeat("ab", 3))
+print(repeat("gabl", 1))`,
+    output: `ababab
+gabl`,
   },
 ];
 

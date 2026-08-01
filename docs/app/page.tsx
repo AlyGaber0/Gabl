@@ -17,6 +17,14 @@ const LEARNED = [
     title: "Tagged unions for AST nodes",
     body: "C has no sum types, so each AST node is a struct with a type enum and a union of payloads. Designing that layout forced me to enumerate every shape a program can take before writing a single line of the evaluator.",
   },
+  {
+    title: "Migrating to a tagged value system",
+    body: "Every value in the interpreter used to be a bare long, which was fine while the language only had integers, but adding strings made that model a dead end. I could have special-cased strings into print and left the evaluator numeric, but that would not have let strings be stored in variables, passed to functions, or returned. So I rebuilt the runtime value representation as a tagged struct and migrated every layer of the interpreter to it before adding the feature. Arrays then dropped into the same structure with no further redesign.",
+  },
+  {
+    title: "Return propagation across call frames",
+    body: "Return values were signalled with a single global flag, which worked until a function called another function inside its own return expression. The inner call would set the flag, and the outer call would read it as its own signal to return early, abandoning the rest of its expression. Moving the flag onto each environment frame tied its lifetime to the call it belonged to and fixed it.",
+  },
 ];
 
 const FEATURES = [
