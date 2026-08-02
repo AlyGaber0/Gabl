@@ -109,6 +109,20 @@ while(i < 5) {
 }`,
   },
   {
+    id: "for",
+    title: "For Loops",
+    description:
+      "A for loop takes three clauses in parentheses, separated by semicolons: an initialiser that runs once, a condition checked before each pass, and an increment that runs after each pass. The parser desugars it into the initialiser followed by an equivalent while loop, so it is shorthand rather than a separate construct. For loops nest, and pair naturally with arrays when you need to walk an index.",
+    code: `for(i = 0; i < 5; i = i + 1) {
+  print(i)
+}
+
+nums = [10, 20, 30]
+for(i = 0; i < 3; i = i + 1) {
+  print(nums[i])
+}`,
+  },
+  {
     id: "functions",
     title: "Functions",
     description:
