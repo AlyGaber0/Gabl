@@ -14,6 +14,14 @@ ASTNode *ast_init(NodeType nodetype)
     node->next = NULL;
     return node;
 }
+ASTNode *last_in_chain(ASTNode *node)
+{
+    while (node->next != NULL)
+    {
+        node = node->next;
+    }
+    return node;
+}
 
 ASTNode *parse_primary(Token *tokens, int *pos)
 {
@@ -284,9 +292,36 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         strcpy(ind_assign->data.name, token.value);
         (*pos) += 2;
         ind_assign->left = parse_expression(tokens, pos);
-        (*pos)+= 2;
+        (*pos) += 2;
         ind_assign->right = parse_expression(tokens, pos);
         return ind_assign;
+    }
+    else if (token.type == TOKEN_FOR)
+    {
+        (*pos)++;
+        (*pos)++;
+        ASTNode *init_statement = parse_statement(tokens, pos);
+        (*pos)++;
+        ASTNode *expression = parse_expression(tokens, pos);
+        (*pos)++;
+        ASTNode *increment = parse_statement(tokens, pos);
+        (*pos)++;
+        (*pos)++;
+        ASTNode *body = parse_statement(tokens, pos);
+        ASTNode *current = body;
+        while (tokens[*pos].type != TOKEN_RBRACE)
+        {
+            ASTNode *body = parse_statement(tokens, pos);
+            current->next = body;
+            current = body;
+        }
+        (*pos)++;
+        ASTNode *while_node = ast_init(NODE_WHILE);
+        while_node->left = expression;
+        while_node->right = body;
+        last_in_chain(body)->next = increment;
+        init_statement->next = while_node;
+        return init_statement;
     }
     else
     {
@@ -297,12 +332,12 @@ ASTNode *parse_statement(Token *tokens, int *pos)
 ASTNode *parse_program(Token *tokens, int *pos)
 {
     ASTNode *initial = parse_statement(tokens, pos);
-    ASTNode *current = initial;
+    ASTNode *current = last_in_chain(initial);
     while (tokens[*pos].type != TOKEN_EOF)
     {
         ASTNode *next = parse_statement(tokens, pos);
         current->next = next;
-        current = next;
+        current = last_in_chain(next);
     }
     return initial;
 }

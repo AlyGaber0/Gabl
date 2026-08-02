@@ -33,7 +33,8 @@ typedef enum
     TOKEN_SLASH_SLASH,
     TOKEN_COMMA,
     TOKEN_LBRACKET,
-    TOKEN_RBRACKET
+    TOKEN_RBRACKET,
+    TOKEN_SEMICOLON
 } TokenType;
 
 typedef struct

@@ -42,5 +42,6 @@ ASTNode *ast_init(NodeType nodetype);
 ASTNode *parse_program(Token *tokens, int *pos);
 ASTNode *parse_statement(Token *tokens, int *pos);
 ASTNode *parse_expression(Token *tokens, int *pos);
+ASTNode *last_in_chain(ASTNode *node);
 
 #endif
