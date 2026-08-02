@@ -1,4 +1,7 @@
-for(i = 0; i < 50; i = i + 1) {
+n = 0
+while(n < 2) {
+for(i = 0; i < 2; i = i + 1) {
 print(i)
 }
-print(99)
+n = n + 1
+}

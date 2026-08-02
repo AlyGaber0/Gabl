@@ -199,12 +199,12 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         (*pos)++;
         (*pos)++;
         ASTNode *body = parse_statement(tokens, pos);
-        ASTNode *current = body;
+        ASTNode *current = last_in_chain(body);
         while (tokens[*pos].type != TOKEN_RBRACE)
         {
             ASTNode *body = parse_statement(tokens, pos);
             current->next = body;
-            current = body;
+            current = last_in_chain(body);
         }
         (*pos)++;
         ASTNode *else_body = NULL;
@@ -212,12 +212,12 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         {
             (*pos) += 2;
             else_body = parse_statement(tokens, pos);
-            ASTNode *else_current = else_body;
+            ASTNode *else_current = last_in_chain(else_body);
             while (tokens[*pos].type != TOKEN_RBRACE)
             {
-                else_body = parse_statement(tokens, pos);
-                else_current->next = else_body;
-                else_current = else_body;
+                ASTNode *stmt = parse_statement(tokens, pos);
+                else_current->next = stmt;
+                else_current = last_in_chain(stmt);
             }
             (*pos)++;
         }
@@ -247,12 +247,12 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         (*pos)++;
         (*pos)++;
         ASTNode *body = parse_statement(tokens, pos);
-        ASTNode *current = body;
+        ASTNode *current = last_in_chain(body);
         while (tokens[*pos].type != TOKEN_RBRACE)
         {
             ASTNode *body = parse_statement(tokens, pos);
             current->next = body;
-            current = body;
+            current = last_in_chain(body);
         }
         (*pos)++;
         fn_node->right = body;
@@ -273,12 +273,12 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         (*pos)++;
         (*pos)++;
         ASTNode *body = parse_statement(tokens, pos);
-        ASTNode *current = body;
+        ASTNode *current = last_in_chain(body);
         while (tokens[*pos].type != TOKEN_RBRACE)
         {
             ASTNode *body = parse_statement(tokens, pos);
             current->next = body;
-            current = body;
+            current = last_in_chain(body);
         }
         (*pos)++;
         ASTNode *while_node = ast_init(NODE_WHILE);
@@ -308,12 +308,12 @@ ASTNode *parse_statement(Token *tokens, int *pos)
         (*pos)++;
         (*pos)++;
         ASTNode *body = parse_statement(tokens, pos);
-        ASTNode *current = body;
+        ASTNode *current = last_in_chain(body);
         while (tokens[*pos].type != TOKEN_RBRACE)
         {
             ASTNode *body = parse_statement(tokens, pos);
             current->next = body;
-            current = body;
+            current = last_in_chain(body);
         }
         (*pos)++;
         ASTNode *while_node = ast_init(NODE_WHILE);
