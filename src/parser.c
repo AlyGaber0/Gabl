@@ -40,6 +40,24 @@ ASTNode *parse_primary(Token *tokens, int *pos)
         (*pos)++;
         return node;
     }
+    if (token.type == TOKEN_TRUE || token.type == TOKEN_FALSE)
+    {
+        ASTNode *node = ast_init(NODE_NUMBER);
+        node->data.num_value = (token.type == TOKEN_TRUE) ? 1 : 0;
+        (*pos)++;
+        return node;
+    }
+    if (token.type == TOKEN_MINUS)
+    {
+        (*pos)++;
+        ASTNode *zero = ast_init(NODE_NUMBER);
+        zero->data.num_value = 0;
+        ASTNode *binop = ast_init(NODE_BINOP);
+        binop->data.op = '-';
+        binop->left = zero;
+        binop->right = parse_primary(tokens, pos);
+        return binop;
+    }
     if (token.type == TOKEN_STRING)
     {
         ASTNode *node = ast_init(NODE_STRING);
@@ -113,7 +131,8 @@ ASTNode *parse_primary(Token *tokens, int *pos)
             return node;
         }
     }
-    return NULL;
+    fprintf(stderr, "Syntax error: unexpected token '%s'.\n", token.value);
+    exit(1);
 }
 
 ASTNode *parse_multiplication(Token *tokens, int *pos)
