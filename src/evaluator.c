@@ -51,6 +51,8 @@ void print_result(Result r)
         }
         printf("]");
     }
+    else if (r.type == TYPE_FUNCTION)
+        printf("<fn %s>", r.type_data.fn.node->data.name);
     else
     {
         fprintf(stderr, "Type error: unknown type.\n");
@@ -184,15 +186,23 @@ Result eval(ASTNode *node, Environment *env)
     }
     case NODE_FUNCTION_DEF:
     {
-        env_set(env, node->data.name, result_create_numb((long)node));
+        Result fn_value;
+        fn_value.type = TYPE_FUNCTION;
+        fn_value.type_data.fn.node = node;
+        fn_value.type_data.fn.env = env;
+        env_set(env, node->data.name, fn_value);
         return result_create_numb(0);
     }
     case NODE_FUNCTION_CALL:
     {
         Result temp = env_get(env, node->data.name);
-        long temp2 = temp.type_data.num_result;
-        ASTNode *fn = (ASTNode *)temp2;
-        Environment *new_env = env_create(env);
+        if (temp.type != TYPE_FUNCTION)
+        {
+            fprintf(stderr, "Error: %s is not a function.\n", node->data.name);
+            exit(1);
+        }
+        ASTNode *fn = temp.type_data.fn.node;
+        Environment *new_env = env_create(temp.type_data.fn.env);
         ASTNode *arg = node->left;
         int i = 0;
         while (arg != NULL)

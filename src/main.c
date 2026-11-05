@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
 
     Lexer lexer = lexer_init(source);
     Token *tokens = tokenize(&lexer);
+    if (tokens == NULL)
+        return 1;
 
     int pos = 0;
     ASTNode *program = parse_program(tokens, &pos);

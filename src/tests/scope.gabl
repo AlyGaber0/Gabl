@@ -1,0 +1,129 @@
+// ---------- 1. free variable resolves at definition site ----------
+x = 1
+fn show() {
+  print(x)
+}
+fn test() {
+  x = 2
+  show()
+}
+test()
+// expected: 1
+show()
+// expected: 1
+
+// ---------- 2. callee cannot see caller locals ----------
+fn reads_outer() {
+  return z
+}
+z = 100
+fn shadows() {
+  z = 999
+  return reads_outer()
+}
+print(shadows())
+// expected: 100
+
+// ---------- 3. parameters shadow globals ----------
+n = 50
+fn double(n) {
+  return n * 2
+}
+print(double(4))
+// expected: 8
+print(n)
+// expected: 50
+
+// ---------- 4. assignment inside a function is local ----------
+count = 0
+fn bump() {
+  count = count + 1
+  return count
+}
+print(bump())
+// expected: 1
+print(count)
+// expected: 0
+
+// ---------- 5. recursion still works ----------
+fn fact(k) {
+  if(k == 0) {
+    return 1
+  }
+  return k * fact(k - 1)
+}
+print(fact(5))
+// expected: 120
+
+// ---------- 6. mutual recursion (is_odd defined after is_even) ----------
+fn is_even(k) {
+  if(k == 0) {
+    return 1
+  }
+  return is_odd(k - 1)
+}
+fn is_odd(k) {
+  if(k == 0) {
+    return 0
+  }
+  return is_even(k - 1)
+}
+print(is_even(10))
+// expected: 1
+print(is_odd(7))
+// expected: 1
+
+// ---------- 7. arguments evaluated in caller scope ----------
+fn sub(a, b) {
+  return a - b
+}
+fn swap_call(a, b) {
+  return sub(b, a)
+}
+print(swap_call(10, 3))
+// expected: -7
+
+// ---------- 8. functions are values ----------
+fn sq(k) {
+  return k * k
+}
+print(sq)
+// expected: <fn sq>
+g = sq
+print(g(6))
+// expected: 36
+
+// ---------- 9. passing a function as an argument ----------
+fn apply(f, v) {
+  return f(v)
+}
+print(apply(sq, 7))
+// expected: 49
+print(apply(double, 7))
+// expected: 14
+
+// ---------- 10. nested function sees enclosing parameter ----------
+fn outer(base) {
+  fn inner(k) {
+    return base + k
+  }
+  return inner(5)
+}
+print(outer(10))
+// expected: 15
+
+// ---------- 11. closures: returned function keeps its env ----------
+fn make_adder(amount) {
+  fn add(k) {
+    return k + amount
+  }
+  return add
+}
+add5 = make_adder(5)
+add10 = make_adder(10)
+print(add5(1))
+// expected: 6
+print(add10(1))
+// expected: 11
+print(add5(100))
+// expected: 105

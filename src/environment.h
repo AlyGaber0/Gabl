@@ -8,8 +8,15 @@ typedef enum
 {
     TYPE_NUMBER,
     TYPE_STRING,
-    TYPE_ARRAY
+    TYPE_ARRAY,
+    TYPE_FUNCTION
 } ResultType;
+
+typedef struct FunctionStruct
+{
+    ASTNode *node;
+    struct Environment *env;
+} FunctionStruct;
 
 typedef struct ArrayStruct
 {
@@ -24,6 +31,7 @@ typedef struct Result
         long num_result;
         char string_result[ARRAY_CAPACITY];
         ArrayStruct arr;
+        FunctionStruct fn;
 
     } type_data;
 } Result;

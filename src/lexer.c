@@ -79,7 +79,7 @@ Token read_name(Lexer *lexer)
     Token token;
     char buf[64];
     int i = 0;
-    while (isalnum(peek(lexer)))
+    while (isalnum(peek(lexer)) || peek(lexer) == '_')
     {
         buf[i] = advance(lexer);
         i++;
@@ -142,7 +142,7 @@ Token next_token(Lexer *lexer)
     {
         return read_number(lexer);
     }
-    if (isalpha(c))
+    if (isalpha(c) || c == '_')
     {
         return read_name(lexer);
     }
@@ -228,6 +228,9 @@ Token next_token(Lexer *lexer)
         token.type = TOKEN_SEMICOLON;
         strcpy(token.value, ";");
         break;
+    default:
+        fprintf(stderr, "Syntax error: unexpected character '%c'.\n", c);
+        exit(1);
     }
 
     return token;
@@ -238,7 +241,7 @@ Token *tokenize(Lexer *lexer)
     Token *arr = malloc(sizeof(Token) * 4096);
     for (int i = 0; i < 4096; i++)
     {
-        if (i == 255)
+        if (i == 4095)
         {
             fprintf(stderr, "Error: too many tokens, max 4096 supported.\n");
             return NULL;
