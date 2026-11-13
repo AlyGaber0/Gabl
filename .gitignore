@@ -2,3 +2,7 @@
 docs/out/
 docs/.next/
 docs/node_modules/
+src/gabl
+src/a.out
+*.dSYM/
+.DS_Store
