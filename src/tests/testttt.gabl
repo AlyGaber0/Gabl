@@ -1,0 +1,5 @@
+
+
+print(text@ "hello world")
+print(text)
+

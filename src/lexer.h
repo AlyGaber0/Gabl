@@ -34,7 +34,8 @@ typedef enum
     TOKEN_COMMA,
     TOKEN_LBRACKET,
     TOKEN_RBRACKET,
-    TOKEN_SEMICOLON
+    TOKEN_SEMICOLON,
+    TOKEN_WALRUS
 } TokenType;
 
 typedef struct

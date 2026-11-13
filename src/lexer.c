@@ -228,6 +228,11 @@ Token next_token(Lexer *lexer)
         token.type = TOKEN_SEMICOLON;
         strcpy(token.value, ";");
         break;
+    case '@':
+        token.type = TOKEN_WALRUS;
+        strcpy(token.value, "@");
+        break;
+
     default:
         fprintf(stderr, "Syntax error: unexpected character '%c'.\n", c);
         exit(1);

@@ -188,6 +188,14 @@ ASTNode *parse_comparison(Token *tokens, int *pos)
 
 ASTNode *parse_expression(Token *tokens, int *pos)
 {
+    if (tokens[(*pos)].type == TOKEN_NAME && tokens[(*pos + 1)].type == TOKEN_WALRUS)
+    {
+        ASTNode *assign = ast_init(NODE_ASSIGN);
+        strcpy(assign->data.name, tokens[*pos].value);
+        (*pos) += 2;
+        assign->right = parse_expression(tokens, pos);
+        return assign;
+    }
     return parse_comparison(tokens, pos);
 }
 
