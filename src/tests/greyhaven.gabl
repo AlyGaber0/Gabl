@@ -1,0 +1,113 @@
+// Gabl demo: a small score tracker
+
+course = "ECSE"
+print("Scores for " + course)
+// expected: Scores for ECSE
+
+
+scores = [72, 95, 58, 88, 100]
+count = 5
+print(scores)
+// expected: [72,95,58,88,100]
+
+
+// for loop + array indexing
+fn sum(arr, n) {
+    total = 0
+    for (i = 0; i < n; i = i + 1) {
+        total = total + arr[i]
+    }
+    return total
+}
+
+// while loop + if
+fn highest(arr, n) {
+    best = arr[0]
+    i = 1
+    while (i < n) {
+        if (arr[i] > best) {
+            best = arr[i]
+        }
+        i = i + 1
+    }
+    return best
+}
+
+// early returns + strings
+fn grade(s) {
+    if (s > 89) {
+        return "A"
+    }
+    if (s > 69) {
+        return "B"
+    }
+    return "C"
+}
+
+
+print(sum(scores, count) / count)
+// expected: 82
+
+
+print(highest(scores, count))
+// expected: 100
+
+
+print(grade(scores[2]))
+// expected: C
+
+
+// string comparison + if/else
+if (grade(highest(scores, count)) == "A") {
+    print("someone got an A")
+} else {
+    print("no A this time")
+}
+// expected: someone got an A
+
+// recursion
+fn power(base, exp) {
+    if (exp == 0) {
+        return 1
+    }
+    return base * power(base, exp - 1)
+}
+print(power(2, 10))
+// expected: 1024
+
+
+// closures: the returned function remembers bonus
+fn make_curve(bonus) {
+    fn curve(s) {
+        return s + bonus
+    }
+    return curve
+}
+curve5 = make_curve(5)
+print(curve5(90))
+// expected: 95
+
+
+// functions as arguments + arrays share their elements
+fn apply_all(arr, n, f) {
+    for (i = 0; i < n; i = i + 1) {
+        arr[i] = f(arr[i])
+    }
+}
+apply_all(scores, count, curve5)
+print(scores)
+// expected: [77,100,63,93,105]
+
+
+// booleans, unary minus, nested arrays
+passed = True
+if (passed == True) {
+    print("curve applied")
+}
+// expected: curve applied
+
+
+change = -5
+report = [course, [sum(scores, count), highest(scores, count)], change]
+print(report)
+// expected: [ECSE,[438,105],-5]
